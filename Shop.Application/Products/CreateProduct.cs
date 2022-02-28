@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
-namespace Shop.Application.Products
+namespace Shop.Application.CreateProducts
 {
     public class CreateProduct
     {
@@ -17,16 +18,23 @@ namespace Shop.Application.Products
             _context = context;
         }
 
-        public async Task Do(string Name, string Description, decimal Value)
+        public async Task Do(ProductViewModel vm)
         {
             _context.Products.Add(new Product
-            { 
-                Name = Name,
-                Description = Description,
-                Value = Value
+{ 
+                Name = vm.Name,
+                Description = vm.Description,
+                Value = vm.Value
             });
 
             await _context.SaveChangesAsync();
         }
+    }
+
+    public class ProductViewModel
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Value { get; set; }
     }
 }
