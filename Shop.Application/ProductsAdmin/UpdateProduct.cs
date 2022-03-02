@@ -18,18 +18,36 @@ namespace Shop.Application.ProductsAdmin
             _context = context;
         }
 
-        public async Task Do(ProductViewModel vm)
+        public async Task<Response> Do(Request request)
         {
-            Product product = await _context.Products.FindAsync(vm.Id);
+            Product product = await _context.Products.FindAsync(request.Id);
 
-            product.Name = vm.Name;
-            product.Description = vm.Description;
-            product.Value = vm.Value;
+            product.Name = request.Name;
+            product.Description = request.Description;
+            product.Value = request.Value;
+
+            _context.Products.Update(product);
 
             await _context.SaveChangesAsync();
+
+            return new Response
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Value = product.Value
+            };
         }
 
-        public class ProductViewModel
+        public class Request
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string Description { get; set; }
+            public decimal Value { get; set; }
+        }
+
+        public class Response
         {
             public int Id { get; set; }
             public string Name { get; set; }
