@@ -31,6 +31,12 @@ namespace Shop.UI
             {
                 options.UseSqlServer(Configuration["DefaultConnection"]);
             });
+
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "Cart";
+                options.Cookie.MaxAge = TimeSpan.FromDays(365); // not expire if browser was closed
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +59,8 @@ namespace Shop.UI
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
