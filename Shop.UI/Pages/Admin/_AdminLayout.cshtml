@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Shop.UI</title>
     <link href="~/lib/bulma/css/bulma.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <h3 class="has-text-centered">Admin Panel</h3>
+    <h3 class="title has-text-centered">Admin Panel</h3>
 
     <div class="container">
         <div class="columns">
@@ -33,13 +32,8 @@
         </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - Shop.UI - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
-
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
