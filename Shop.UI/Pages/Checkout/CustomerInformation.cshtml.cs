@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Shop.Application.Cart;
-using Shop.Database;
 
 namespace Shop.UI.Pages.Checkout
 {
@@ -33,7 +32,7 @@ namespace Shop.UI.Pages.Checkout
 
             new AddCustomerInformation(HttpContext.Session).Do(CustomerInformation);
 
-            return RedirectToPage("Payment");
+            return RedirectToPage("/Checkout/Payment");
         }
     }
 }
