@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Shop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,9 +26,19 @@ namespace Shop.Application.Cart
             if (string.IsNullOrEmpty(stringObject))
                 return null;
 
-            var response = JsonConvert.DeserializeObject<Response>(stringObject);
+            var customerInformation = JsonConvert.DeserializeObject<CustomerInformation>(stringObject);
 
-            return response;
+            return new Response
+            {
+                FirstName = customerInformation.FirstName,
+                LastName = customerInformation.LastName,
+                Email = customerInformation.Email,
+                PhoneNumber = customerInformation.PhoneNumber,
+                Address1 = customerInformation.Address1,
+                Address2 = customerInformation.Address2,
+                City = customerInformation.City,
+                PostCode = customerInformation.PostCode
+            };
         }
 
         public class Response
