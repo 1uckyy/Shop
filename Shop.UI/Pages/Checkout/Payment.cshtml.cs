@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Shop.Application.Cart;
+using Shop.Application.Orders;
+using Shop.Database;
 using Stripe;
 
 namespace Shop.UI.Pages.Checkout
@@ -14,9 +16,12 @@ namespace Shop.UI.Pages.Checkout
     {
         public string PublicKey { get; }
 
-        public PaymentModel(IConfiguration config)
+        private ApplicationDbContext _ctx;
+
+        public PaymentModel(IConfiguration config, ApplicationDbContext ctx)
         {
             PublicKey = config["Stripe:PublicKey"].ToString();
+            _ctx = ctx;
         }
 
         public IActionResult OnGet()
@@ -29,10 +34,12 @@ namespace Shop.UI.Pages.Checkout
             return Page();
         }
 
-        public IActionResult OnPost(string stripeEmail, string stripeToken)
+        public async Task<IActionResult> OnPost(string stripeEmail, string stripeToken)
         {
             var customers = new CustomerService();
             var charges = new ChargeService();
+
+            var CardOrder = new GetOrder(HttpContext.Session, _ctx).Do();
 
             var customer = customers.Create(new CustomerCreateOptions
             {
@@ -42,10 +49,30 @@ namespace Shop.UI.Pages.Checkout
 
             var charge = charges.Create(new ChargeCreateOptions
             {
-                Amount = 500,
-                Description = "Sample Charge",
-                Currency = "usd",
+                Amount = CardOrder.GetTotalCharge(),
+                Description = "Shop Purchase",
+                Currency = "gbp",
                 Customer = customer.Id
+            });
+
+            await new CreateOrder(_ctx).Do(new CreateOrder.Request
+            {
+                StripeReference = charge.OrderId,
+
+                FirstName = CardOrder.CustomerInformation.FirstName,
+                LastName = CardOrder.CustomerInformation.LastName,
+                Email = CardOrder.CustomerInformation.Email,
+                PhoneNumber = CardOrder.CustomerInformation.PhoneNumber,
+                Address1 = CardOrder.CustomerInformation.Address1,
+                Address2 = CardOrder.CustomerInformation.Address2,
+                City = CardOrder.CustomerInformation.City,
+                PostCode = CardOrder.CustomerInformation.PostCode,
+
+                Stocks = CardOrder.Products.Select(x => new CreateOrder.Stock
+                {
+                    StockId = x.StockId,
+                    Qty = x.Qty
+                }).ToList()
             });
 
             return RedirectToPage("/Index");

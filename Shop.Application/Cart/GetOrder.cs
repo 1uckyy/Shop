@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Shop.Database;
+using Shop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,22 +22,27 @@ namespace Shop.Application.Cart
             _ctx = ctx;
         }
 
-        public IEnumerable<Response> Do()
+        public Response Do()
         {
             var cart = _session.GetString("cart");
 
             var cartList = JsonConvert.DeserializeObject<List<CartProduct>>(cart);
+            var itemsInCart = cartList.Select(x => x.StockId);
 
             var listOfProducts = _ctx.Stock
                 .Include(x => x.Product)
-                .Where(x => cartList.Any(y => y.StockId == x.Id))
+                .Where(x => itemsInCart.Contains(x.Id))
                 .Select(x => new Product
                 {
                     ProductId = x.ProductId,
                     StockId = x.Id,
-                    Value = (int) (x.Product.Value * 100),
-                    Qty = cartList.FirstOrDefault(y => y.StockId == x.Id).Qty
+                    Value = (int) (x.Product.Value * 100)
                 }).ToList();
+
+            listOfProducts.ForEach(x =>
+            {
+                x.Qty = cartList.FirstOrDefault(y => y.StockId == x.StockId).Qty;
+            });
 
             var customerInfoString = _session.GetString("customer-info");
 
@@ -63,6 +69,7 @@ namespace Shop.Application.Cart
         {
             public IEnumerable<Product> Products { get; set; }
             public CustomerInformation CustomerInformation { get; set; }
+            public int GetTotalCharge() => Products.Sum(x => x.Value * x.Qty);
         }
 
         public class Product
