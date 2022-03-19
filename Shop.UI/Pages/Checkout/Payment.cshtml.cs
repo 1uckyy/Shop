@@ -39,7 +39,7 @@ namespace Shop.UI.Pages.Checkout
             var customers = new CustomerService();
             var charges = new ChargeService();
 
-            var CardOrder = new GetOrder(HttpContext.Session, _ctx).Do();
+            var CardOrder = new Application.Cart.GetOrder(HttpContext.Session, _ctx).Do();
 
             var customer = customers.Create(new CustomerCreateOptions
             {
@@ -57,7 +57,7 @@ namespace Shop.UI.Pages.Checkout
 
             await new CreateOrder(_ctx).Do(new CreateOrder.Request
             {
-                StripeReference = charge.OrderId,
+                StripeReference = charge.Id,
 
                 FirstName = CardOrder.CustomerInformation.FirstName,
                 LastName = CardOrder.CustomerInformation.LastName,
