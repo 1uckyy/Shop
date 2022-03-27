@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Stripe;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace Shop.UI
 {
@@ -27,14 +28,12 @@ namespace Shop.UI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
-
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration["DefaultConnection"]);
             });
 
-            services.AddDefaultIdentity<IdentityUser>(options =>
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 6;
@@ -43,10 +42,15 @@ namespace Shop.UI
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Accounts/Login";
+            });
+
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", policy => policy.RequireClaim("Admin"));
-                options.AddPolicy("Manager", policy => policy.RequireClaim("Manager"));
+                options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin"));
+                options.AddPolicy("Manager", policy => policy.RequireClaim("Role", "Manager"));
             });
 
             services.AddSession(options =>
@@ -56,6 +60,13 @@ namespace Shop.UI
             });
 
             StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
+
+            services
+                .AddMvc(option => option.EnableEndpointRouting = false)
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.AuthorizeFolder("/Admin");
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +85,7 @@ namespace Shop.UI
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
 
             app.UseRouting();
 
@@ -87,7 +99,22 @@ namespace Shop.UI
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
+                //endpoints.MapControllerRoute(
+                //   name: "default",
+                //   pattern: "{controller=Home}/{action=Index}");
             });
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapRazorPages();
+
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Home}/{action=Index}/{id?}");
+            //});
+
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
