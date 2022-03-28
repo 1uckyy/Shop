@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Stripe;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
+using Shop.Application.UsersAdmin;
 
 namespace Shop.UI
 {
@@ -72,7 +73,10 @@ namespace Shop.UI
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizeFolder("/Admin");
+                    options.Conventions.AuthorizePage("/Admin/ConfigureUsers", "Admin");
                 });
+
+            services.AddTransient<CreateUser>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

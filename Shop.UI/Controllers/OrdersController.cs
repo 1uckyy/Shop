@@ -20,13 +20,13 @@ namespace Shop.UI.Controllers
             _ctx = ctx;
         }
 
-        [HttpGet("")]
-        public IActionResult GetOrders(int status) => Ok(new GetOrders(_ctx).Do(status));
+        //[HttpGet("")]
+        //public IActionResult GetOrders(int status) => Ok(new GetOrders(_ctx).Do(status));
 
-        [HttpGet("{id}")]
-        public IActionResult GetOrder(int id) => Ok(new GetOrder(_ctx).Do(id));
+        //[HttpGet("{id}")]
+        //public IActionResult GetOrder(int id) => Ok(new GetOrder(_ctx).Do(id));
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id) => Ok((await new UpdateOrder(_ctx).Do(id)));
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> UpdateOrder(int id) => Ok((await new UpdateOrder(_ctx).Do(id)));
     }
 }
