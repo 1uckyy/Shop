@@ -22,7 +22,7 @@ namespace Shop.UI.Controllers
         {
             await _signInManager.SignOutAsync();
 
-            return RedirectToPage("Index");
+            return RedirectToPage("/Index");
         }
     }
 }
