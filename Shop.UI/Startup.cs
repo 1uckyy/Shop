@@ -110,19 +110,7 @@ namespace Shop.UI
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
                 endpoints.MapDefaultControllerRoute();
-                //endpoints.MapControllerRoute(
-                //   name: "default",
-                //   pattern: "{controller=Home}/{action=Index}");
             });
-
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapRazorPages();
-
-            //    endpoints.MapControllerRoute(
-            //        name: "default",
-            //        pattern: "{controller=Home}/{action=Index}/{id?}");
-            //});
 
             app.UseMvcWithDefaultRoute();
         }
