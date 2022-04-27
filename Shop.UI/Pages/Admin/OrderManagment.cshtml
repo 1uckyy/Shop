@@ -14,7 +14,7 @@
         </div>
         <div v-if="orders.length > 0">
             <p v-for="order in orders">
-                <a @@click="selectedOrder(order.id)">{{order.orderRef}} - {{order.email}}</a>
+                <a @@click="selectOrder(order.id)">{{order.orderRef}} - {{order.email}}</a>
             </p>
         </div>
     </div>

@@ -26,7 +26,7 @@ namespace Shop.UI.Controllers
             [FromServices] GetOrder getOrder) =>
                 Ok(getOrder.Do(id));
 
-        [HttpGet("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOrder(
             int id,
             [FromServices] UpdateOrder updateOrder) =>
