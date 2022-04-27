@@ -68,6 +68,8 @@ namespace Shop.UI
 
             StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
 
+            services.AddApplicationServices();
+
             services
                 .AddMvc(option => option.EnableEndpointRouting = false)
                 .AddRazorPagesOptions(options =>
@@ -75,8 +77,6 @@ namespace Shop.UI
                     options.Conventions.AuthorizeFolder("/Admin");
                     options.Conventions.AuthorizePage("/Admin/ConfigureUsers", "Admin");
                 });
-
-            services.AddTransient<CreateUser>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
