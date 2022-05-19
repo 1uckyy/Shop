@@ -20,7 +20,21 @@
                         </p>
                     </div>
                     <div class="level-item">
-                        <p>@product.Qty</p>
+                        <div class="columns is-mobile">
+                            <div class="column">
+                                <button class="button" type="button">
+                                    -
+                                </button>
+                            </div>
+                            <div class="column align-self-center">
+                                @product.Qty
+                            </div>
+                            <div class="column">
+                                <button class="button" type="button" onclick="addOneToCart(event)" data-stock-id="@product.StockId">
+                                    +
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="level-item">
                         <p>@product.Value</p>
@@ -39,3 +53,17 @@
 @*<vc:cart view="Small"></vc:cart>*@
 
 @*@await Component.InvokeAsync("Cart", new { view = "Small" })*@
+
+@section scripts {
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        var addOneToCart = function (e) {
+            var stockId = e.target.dataset.stockId;
+            axios.post("/cart/AddOne/" + stockId)
+                .then(res => {
+                    // todo update qty
+                })
+        }
+    </script>
+}
