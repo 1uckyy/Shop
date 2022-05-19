@@ -22,15 +22,20 @@
                     <div class="level-item">
                         <div class="columns is-mobile">
                             <div class="column">
-                                <button class="button" type="button">
+                                <button class="button" type="button"
+                                        onclick="removeOneFromCart(event)"
+                                        data-stock-id="@product.StockId">
                                     -
                                 </button>
                             </div>
-                            <div class="column align-self-center">
+                            <div class="column align-self-center"
+                                id="stock-@product.StockId">
                                 @product.Qty
                             </div>
                             <div class="column">
-                                <button class="button" type="button" onclick="addOneToCart(event)" data-stock-id="@product.StockId">
+                                <button class="button" type="button"
+                                        onclick="addOneToCart(event)"
+                                        data-stock-id="@product.StockId">
                                     +
                                 </button>
                             </div>
@@ -60,9 +65,33 @@
     <script>
         var addOneToCart = function (e) {
             var stockId = e.target.dataset.stockId;
-            axios.post("/cart/AddOne/" + stockId)
+            axios.post("/Cart/AddOne/" + stockId)
                 .then(res => {
-                    // todo update qty
+                    var id = "stock-" + stockId;
+                    var el = document.getElementById(id);
+
+                    var qty = parseInt(el.innerText);
+
+                    el.innerText = (qty + 1);
+                })
+                .catch(err => {
+                    alert(err.error);
+                })
+        }
+
+        var removeOneFromCart = function (e) {
+            var stockId = e.target.dataset.stockId;
+            axios.post("/Cart/RemoveOne/" + stockId)
+                .then(res => {
+                    var id = "stock-" + stockId;
+                    var el = document.getElementById(id);
+
+                    var qty = parseInt(el.innerText);
+
+                    el.innerText = (qty - 1);
+                })
+                .catch(err => {
+                    alert(err.error);
                 })
         }
     </script>
